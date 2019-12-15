@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'service/service_method.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import '../service/service_method.dart';
 import 'dart:convert';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import './widgets/home/swiper_diy.dart'; // 轮播图
+import './widgets/home/top_navigator.dart'; // 导航
+import './widgets/home/ad_banner.dart'; // banner图片
+import './widgets/home/leader_phone.dart'; // 拨打店长电话模块
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,43 +26,30 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.hasData) {
             var data = json.decode(snapshot.data.toString());
             // List里面是Map
+            // 轮播图数据
             List<Map> swiper = (data['data']['slides'] as List).cast();
+            // 导航数据
+            List<Map> navigatorList = (data['data']['category'] as List).cast();
+            // banner图片地址
+            String adPicture = data['data']['advertesPicture']['PICTURE_ADDRESS'];
+
+            // 店长图片和店长电话
+            String leaderImage = data['data']['shopInfo']['leaderImage'];
+            String leaderPhone = data['data']['shopInfo']['leaderPhone'];
+
+
             return Column(
-              children: <Widget>[SwiperDiy(swiperDataList: swiper)],
+              children: <Widget>[
+                SwiperDiy(swiperDataList: swiper),
+                TopNavigator(navigatorList: navigatorList),
+                AdBanner(adPicture: adPicture),
+                LeaderPhone(leaderImage: leaderImage, leaderPhone: leaderPhone),
+              ],
             );
           } else {
             return Center(child: Text('加载中...'));
           }
         },
-      ),
-    );
-  }
-}
-
-// 首页轮播组件
-class SwiperDiy extends StatelessWidget {
-  final List swiperDataList; // 用来接收参数
-  // 无名无参的参数的父类
-  // SwiperDiy({Key key, this.swiperDataList}) : super(key: key);
-  SwiperDiy({this.swiperDataList});
-
-  @override
-  Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
-
-    return Container(
-      height: ScreenUtil().setHeight(333),
-      child: Swiper(
-        // 构造器
-        itemBuilder: (BuildContext context, int index) {
-          return Image.network(
-            '${swiperDataList[index]['image']}',
-            fit: BoxFit.fill, // 满容器填充
-          );
-        },
-        itemCount: swiperDataList.length, // 图片张数
-        pagination: SwiperPagination(), // 轮播图下面的导航器
-        autoplay: true, // 自动播放
       ),
     );
   }
