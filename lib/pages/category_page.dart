@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import '../service/service_method.dart';
-import '../model/category.dart';
+import './widgets/category/left_category_nav.dart';
+import './widgets/category/right_category_nav.dart';
+
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -11,19 +11,23 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
-    _getCategory();
-    return Container(
-      child: Center(
-        child: Text('分类页面'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('商品分类'),
+      ),
+      body: Container(
+        child: Row(
+          children: <Widget>[
+            LeftCategoryNav(),
+            Column(
+              children: <Widget>[
+                RightCategoryNav(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
-
-  void _getCategory() async {
-    await request('getCategory').then((val) {
-      var data = json.decode(val.toString());
-      CategoryModel list = CategoryModel.fromJson(data['data']);
-      list.data.forEach((item) => print(item.mallCategoryName));
-    });
-  }
+  
 }

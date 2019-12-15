@@ -1,8 +1,21 @@
-
 import 'package:flutter/material.dart';
+import 'package:provide/provide.dart';
 import './pages/index_page.dart';
+import './provide/counter.dart';
+import './provide/child_category.dart';
 
-void main() => runApp(MyApp());
+// 顶层依赖
+void main() {
+  var counter = Counter();
+  var childCategory = ChildCategory();
+  var providers = Providers();
+  // 注册依赖，两个点表示再返回providers，<Counter>是泛型
+  // 多个状态可以在后面再..provide
+  providers
+  ..provide(Provider<Counter>.value(counter))
+  ..provide(Provider<ChildCategory>.value(childCategory));
+  runApp(ProviderNode(child: MyApp(), providers: providers));
+}
 
 class MyApp extends StatelessWidget {
   @override
