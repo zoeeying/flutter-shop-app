@@ -33,7 +33,7 @@ class _IndexPageState extends State<IndexPage> {
     ),
   ];
 
-  final List tabBodies = [
+  final List<Widget> tabBodies = [
     HomePage(),
     CategoryPage(),
     CartPage(),
@@ -61,7 +61,10 @@ class _IndexPageState extends State<IndexPage> {
           });
         },
       ),
-      body: tabBodies[currentIndex],
+      body: IndexedStack(
+        index: currentIndex,
+        children: tabBodies, // children必须是ListView
+      ),
     );
   }
 }

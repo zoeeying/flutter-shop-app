@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
 import 'package:tmp/provide/child_category.dart';
-import '../../../model/category.dart';
+import '../../model/category.dart';
 
 class RightCategoryNav extends StatefulWidget {
   @override

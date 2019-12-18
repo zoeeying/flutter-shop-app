@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './widgets/category/left_category_nav.dart';
-import './widgets/category/right_category_nav.dart';
+import './category_page/left_category_nav.dart';
+import './category_page/right_category_nav.dart';
 
 
 class CategoryPage extends StatefulWidget {

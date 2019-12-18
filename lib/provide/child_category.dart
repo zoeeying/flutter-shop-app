@@ -4,7 +4,6 @@ import '../model/category.dart'; // 里面的子类BxMallSubDto，作为泛型
 
 class ChildCategory with ChangeNotifier {
   List<BxMallSubDto> childCategoryList = [];
-
   // 改变childCategoryList的方法
   getChildCategory(List<BxMallSubDto> list){
     BxMallSubDto all = BxMallSubDto();
