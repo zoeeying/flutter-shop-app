@@ -29,7 +29,6 @@ class Recommend extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Container(
-        height: ScreenUtil().setHeight(330),
         width: ScreenUtil().setWidth(250),
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
@@ -47,6 +46,7 @@ class Recommend extends StatelessWidget {
               style: TextStyle(
                 decoration: TextDecoration.lineThrough, // 删除线
                 color: Colors.grey,
+                fontSize: ScreenUtil().setSp(26),
               ),
             ),
           ],
@@ -58,7 +58,7 @@ class Recommend extends StatelessWidget {
   // 横向列表方法
   Widget _recommendList() {
     return Container(
-      height: ScreenUtil().setHeight(330),
+      height: ScreenUtil().setHeight(360),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: recommendList.length,
@@ -72,8 +72,7 @@ class Recommend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil().setHeight(380),
-      margin: EdgeInsets.only(top: 15.0),
+      margin: EdgeInsets.only(top: 10.0),
       child: Column(
         children: <Widget>[
           _titleWidget(),

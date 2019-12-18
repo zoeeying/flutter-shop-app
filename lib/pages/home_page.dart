@@ -7,13 +7,16 @@ import './home_page/top_navigator.dart'; // 导航
 import './home_page/ad_banner.dart'; // banner图片
 import './home_page/leader_phone.dart'; // 拨打店长电话模块
 import './home_page/recommend.dart'; // 商品推荐模块
+import './home_page/floor_title.dart'; // 楼层标题
+import './home_page/floor_content.dart'; // 楼层商品
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -46,6 +49,14 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
             List<Map> recommendList =
                 (data['data']['recommend'] as List).cast(); // 强制转换List
 
+            // 楼层商品
+            String floor1Title = data['data']['floor1Pic']['PICTURE_ADDRESS'];
+            String floor2Title = data['data']['floor2Pic']['PICTURE_ADDRESS'];
+            String floor3Title = data['data']['floor3Pic']['PICTURE_ADDRESS'];
+            List<Map> floor1 = (data['data']['floor1'] as List).cast();
+            List<Map> floor2 = (data['data']['floor2'] as List).cast();
+            List<Map> floor3 = (data['data']['floor3'] as List).cast();
+
             // 外边包一层SingleChildScrollView
             // 可以防止内容在一屏显示不下越界而出现黄条异常提示
             return SingleChildScrollView(
@@ -59,6 +70,12 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                     leaderPhone: leaderPhone,
                   ),
                   Recommend(recommendList: recommendList),
+                  FloorTitle(pictureAddress: floor1Title),
+                  FloorContent(floorGoodsList: floor1),
+                  FloorTitle(pictureAddress: floor2Title),
+                  FloorContent(floorGoodsList: floor2),
+                  FloorTitle(pictureAddress: floor3Title),
+                  FloorContent(floorGoodsList: floor3),
                 ],
               ),
             );

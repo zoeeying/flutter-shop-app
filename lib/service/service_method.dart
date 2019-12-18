@@ -26,6 +26,7 @@ Future request(url, {formData}) async {
 // 获取首页主体内容
 Future getHomePageContent() async {
   try {
+    print('开始获取首页主体内容....');
     Response response;
     Dio dio = new Dio();
     dio.options.contentType = Headers.formUrlEncodedContentType;
@@ -34,7 +35,26 @@ Future getHomePageContent() async {
     if (response.statusCode == 200) {
       return response.data;
     } else {
-      throw Exception('首页主体内容获取失败！');
+      throw Exception('后端接口出现异常！');
+    }
+  } catch (e) {
+    return print('ERROR：===================$e');
+  }
+}
+
+// 获取火爆专区的商品
+Future getHomePageBelowConten() async {
+  try {
+    print('开始获取火爆专区的商品....');
+    Response response;
+    Dio dio = new Dio();
+    dio.options.contentType = Headers.formUrlEncodedContentType;
+    int page = 1;
+    response = await dio.post(servicePath['homePageBelowConten'], data: page);
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
+      throw Exception('后端接口出现异常！');
     }
   } catch (e) {
     return print('ERROR：===================$e');

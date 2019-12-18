@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import './config/httpHeaders.dart';
+import '../../config/httpHeaders.dart';
 
 class HomePage extends StatefulWidget {
   @override
