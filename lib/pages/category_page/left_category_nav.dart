@@ -1,11 +1,13 @@
 // 左侧大类导航
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provide/provide.dart';
 import 'dart:convert';
 import '../../service/service_method.dart';
 import '../../model/category.dart';
-import 'package:provide/provide.dart';
+import '../../model/categoryGoodsList.dart';
 import '../../provide/child_category.dart';
+import '../../provide/category_goods_list.dart';
 
 class LeftCategoryNav extends StatefulWidget {
   @override
@@ -18,10 +20,12 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
   @override
   void initState() {
-    _getCategory();
     super.initState();
+    _getCategory();
+    _getGoodsList();
   }
 
+  // 获取大类
   void _getCategory() async {
     await request('getCategory').then((val) {
       var data = json.decode(val.toString());
@@ -34,6 +38,24 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       // 这里跟React不太一样，setState设置过list后，可以直接用
       Provide.value<ChildCategory>(context)
           .getChildCategory(list[0].bxMallSubDto);
+    });
+  }
+
+  // 获取不同大类下面的商品
+  // 可选参数categoryId
+  void _getGoodsList({String categoryId}) async {
+    var postData = {
+      // 传递给后台的参数可以做个判断，弄一个默认值，确保不会传递过去null
+      'categoryId': categoryId == null ? '4' : categoryId,
+      'categorySubId': '', // 不能传null
+      'page': 1,
+    };
+    await request('getMallGoods', data: postData).then((val) {
+      var data = json.decode(val.toString());
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+      // 使用状态管理来管理goodsList
+      Provide.value<CategoryGoodsListProvide>(context)
+          .getGoodsList(goodsList.data);
     });
   }
 
@@ -63,7 +85,9 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
           listIndex = index;
         });
         var childList = list[index].bxMallSubDto;
+        var categoryId = list[index].mallCategoryId;
         Provide.value<ChildCategory>(context).getChildCategory(childList);
+        _getGoodsList(categoryId: categoryId);
       },
       child: Container(
         height: ScreenUtil().setHeight(100),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import '../service/service_method.dart';
 import 'dart:convert';
+import '../service/service_method.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_easyrefresh/material_header.dart';
+import 'package:flutter_easyrefresh/material_footer.dart';
 
 import './home_page/swiper_diy.dart'; // 轮播图
 import './home_page/top_navigator.dart'; // 导航
@@ -9,6 +12,7 @@ import './home_page/leader_phone.dart'; // 拨打店长电话模块
 import './home_page/recommend.dart'; // 商品推荐模块
 import './home_page/floor_title.dart'; // 楼层标题
 import './home_page/floor_content.dart'; // 楼层商品
+import './home_page/hot_goods.dart'; // 火爆专区商品
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,13 +26,17 @@ class _HomePageState extends State<HomePage>
 
   String homePageContent = '正在获取数据';
 
+  int page = 1; // 火爆专区页码
+  List<Map> hotGoodsList = []; // 火爆专区商品
+
   @override
   Widget build(BuildContext context) {
+    var positionInfo = {'lon': '115.02932', 'lat': '35.76189'};
     return Scaffold(
-      appBar: AppBar(title: Text('百姓生活+')),
+      appBar: AppBar(title: Text('小畅叙的APP')),
       // FutureBuilder可以解决异步请求数据然后渲染组件，而且不需要setState
       body: FutureBuilder(
-        future: getHomePageContent(),
+        future: request('homePageContent', data: positionInfo),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = json.decode(snapshot.data.toString());
@@ -57,10 +65,10 @@ class _HomePageState extends State<HomePage>
             List<Map> floor2 = (data['data']['floor2'] as List).cast();
             List<Map> floor3 = (data['data']['floor3'] as List).cast();
 
-            // 外边包一层SingleChildScrollView
-            // 可以防止内容在一屏显示不下越界而出现黄条异常提示
-            return SingleChildScrollView(
-              child: Column(
+            return EasyRefresh(
+              header: MaterialHeader(),
+              footer: MaterialFooter(),
+              child: ListView(
                 children: <Widget>[
                   SwiperDiy(swiperDataList: swiper),
                   TopNavigator(navigatorList: navigatorList),
@@ -76,8 +84,22 @@ class _HomePageState extends State<HomePage>
                   FloorContent(floorGoodsList: floor2),
                   FloorTitle(pictureAddress: floor3Title),
                   FloorContent(floorGoodsList: floor3),
+                  HotGoods(hotGoodsList: hotGoodsList),
                 ],
               ),
+              onLoad: () async {
+                print('开始加载更多......');
+                var requestData = {'page': page};
+                await request('homePageBelowConten', data: requestData)
+                    .then((val) {
+                  var data = json.decode(val.toString());
+                  List<Map> newGoodsList = (data['data'] as List).cast();
+                  setState(() {
+                    hotGoodsList.addAll(newGoodsList);
+                    page++;
+                  });
+                });
+              },
             );
           } else {
             return Center(child: Text('加载中...'));
